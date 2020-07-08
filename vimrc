@@ -47,6 +47,9 @@ nnoremap <C-K> <C-W><C-K>
 nnoremap <C-L> <C-W><C-L>
 nnoremap <C-H> <C-W><C-H>
 
+"用ctrl+v 选中文字之后，连续按2次按下/就可以直接搜索选中的文字
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR> 
+
 "-------------------常用MAC快捷键----------------------------------------------
 "程序之间相互切换:
 "Command + Tab :任意情况下切换应用程序 - 向前循环
@@ -92,6 +95,12 @@ nnoremap <C-H> <C-W><C-H>
 " :set nolist        : 不显示空格和tab
 " :/\s\+$            : 显示行尾空格
 "
+" 从文本中复制单词到cmd buffer:
+" <1> 光标移动到待复制复单词处，
+" <2> 进入命令行模式
+" <3> Ctrl+r
+" <4> Ctrl +w
+"
 " 文本对象:
 " v, p, y, d 分别为: 选中, 粘贴, 复制, 删除
 " S        : 清除当前行的内容
@@ -119,18 +128,55 @@ nnoremap <C-H> <C-W><C-H>
 " i`       : 反引号 `backticks` 内部
 "
 " Gblame   : 查看源文件的每一行最后是谁修改的
-"------------------------------------------------------------------------------
+"--------------------------------------------------------------------------
 
+
+"-------------------git----------------------------------------------------
+" 安装git sed
+" sudo apt-get  install git-extras
+"
+" 用法 全局字符串替换:
+" git sed ENABLE_SLAAC  CONFIG_SLAAC_ENABLE
+"
+
+
+"-------------------linux 快捷键-------------------------------------------
+" 1. 使用命令行复制：
+" 在linux的bashrc文件中添加：
+" alias "xc=xclip -selection clipboard"
+"
+" 使用方法:
+"  pwd | xc          // 复制当前路径到剪切板
+"  Ctrl + Shift +v   // 将剪切板中的内容粘贴到鼠标处
+"
+" 2. 将vim中的内容复制到linux系统中的剪切板中:
+" vim使用下面的配置,这样使用vim的复制命令时，会直接将内容复制到系统的剪切板中。
+" 在系统中用Ctrl+Shift+v就可以复制到别处. 注意:vim的version必须在7.3.74以上. 
+set clipboard=unnamedplus
 
 "-------------------tmux---------------------------------------------------
-" 将下面三句加入~/.tmux.conf中将快捷键Ctrl-b更改成Ctrl-a：
+" 在MAC中使用tmux的时候，建议使用iterm2,它可以支持用鼠标复制粘贴。
+"
+" linux中的tmux的粘贴复制:
+" Shift + 鼠标选中
+" Ctrl + Shift + c copy
+" Ctrl + Shift + v paste 
+"
+" 或者使用下面的快捷键粘贴复制：
+" <1>同时按下 prefix + [ 可以进入复制模式
+" <2>移动光标到要复制文本的开端位置。
+" <3>按下空格键开始进行选择，移动到要复制的文本的末尾位置。
+" <4>按下回车键结束复制(到了系统粘贴板，如果无效请参考使用tmux-yank)并退出文本复制模式(这是文本已经在粘贴板上)。
+" <5>到目标位置按下 prefix + ] 或者用 系统粘贴(macOS 是 command + v)
+"
+" 将下面三句加入~/.tmux.conf中将快捷键Ctrl-b更改成Ctrl-q：
 " unbind C-b
-" set -g prefix C-a
+" set -g prefix C-q
 " bind R source-file ~/.tmux.conf ; display-message "Config reloaded.."
 " 
 " 更改完配置文件之后按下Ctrl-b r 重新加载配置文件
 "
-" 创建会话相关命令
+" 1. 创建会话相关命令:
 " $tmux new -s session1      // 创建一个新的tmux会话session1
 " $tmux new -s session1 -d   // 在后台创建一个新的tmux会话session1
 " $tmux ls                   // 查看创建的所有会话
@@ -139,12 +185,11 @@ nnoremap <C-H> <C-W><C-H>
 " $tmux a -t session1        // 登录一个已知的会话，a也可以写成attach
 " $tmux rename -t session1 session_uart  // 重命名会话
 "
-" 调整窗口：
-"
-" 1. 先按下下面的快捷键进入命令模式：
+" 2. 调整窗口：
+" <1>. 先按下下面的快捷键进入命令模式：
 " Ctrl-b :
 "
-" 2.输入下面的命令调整窗口大小：
+" <2>.输入下面的命令调整窗口大小：
 " resize-pane -U 5  // 上移5行
 " resize-pane -D 5  // 下移5行
 " resize-pane -L 5  // 左移5行
@@ -152,6 +197,7 @@ nnoremap <C-H> <C-W><C-H>
 "
 "
 " 快捷键(注意：先按下Ctrl-b 然后松手 最后按下后面的快捷字符)：
+" 3. 面板操作:
 " Ctrl-b % : 分割两个竖直面板
 " Ctrl-b " : 分割两个水平面板
 " Ctrl-b left  : 切换至左边的面板
@@ -160,10 +206,18 @@ nnoremap <C-H> <C-W><C-H>
 " Ctrl-b down  : 切换至下边的面板
 " Ctrl-b x     : 关闭当前面板
 " Ctrl-b q     : 显示面板编号
+" Ctrl+b z     : 当前窗格全屏显示，再使用一次会变回原来大小
 " Ctrl-b q n   : 切换到面板编号为n的面板
 "
+" 4. 窗口操作:
+" Ctrl+b c     : 创建一个新窗口，状态栏会显示多个窗口的信息。
 " Ctrl-b &     : 关闭当前窗口
-"
+" Ctrl+b p     : 切换到上一个窗口（按照状态栏上的顺序）。
+" Ctrl+b n     : 切换到下一个窗口。
+" Ctrl+b <number>: 切换到指定编号的窗口，其中的<number>是状态栏上的窗口编号。
+" Ctrl+b w     : 从列表中选择窗口。
+" Ctrl+b ,     : 窗口重命名。
+
 "打开鼠标支持, 先进入命令模式，然后输入：
 "   set-option mouse on
 "------------------------------------------------------------------------------
@@ -175,29 +229,52 @@ nnoremap <C-H> <C-W><C-H>
 " $docker pull ubuntu:16.04          // 下载指定版本的镜像
 " $docker pull ubuntu:latest         // 下载最新版本的镜像
 " $docker images [-a]                // 显示本地镜像,[-a]显示所有镜像
-" $docker docker run -it --name xzl_ubuntu ubuntu:16.04  /bin/bash //创建一个容器
-" $docker ps [-l] [-a]               // [-a]列出所有容器,[-l]列出最近的容器
-" $docker start   xzl_ubuntu         // 启动容器
-" $docker stop    xzl_ubuntu         // 停止容器
-" $docker restart xzl_ubuntu         // 重启容器
-" Ctrl-p + Ctrl-q                    // 让容器在后台运行
-" $docker attach  xzl_ubuntu         // 重新进入容器
-" $docker logs -f xzl_ubuntu         // 查看容器日志
+"
+" 创建一个容器
+" $docker run -it  ${REPOSITORY}:${TAG} /bin/bash
+" $docker run -it -d --name xzl_ubuntu ${IMAGE ID}  /bin/bash 
+" $sudo docker run --rm -it -v $HOME:$HOME  -w $HOME --name xzl_ubuntu ${IMAGE ID} /bin/bash -c "adduser --disabled-password --uid=$(id -u) --gecos '' $USER && su $USER"
+" Options:
+"    --interactive, -i   展示容器输入信息STDIN
+"    --tty, -t	         命令行交互模式
+"    --workdir, -w		 指定容器内的目录, Example: -w $HOME
+"    --detach, -d		 后台运行模式，在后台执行命令相关命令
+"    --user, -u		     设置用户名(format: <name|uid>[:<group|gid>])
+"    -v		             将宿主机目录挂载到docker中, Example: -v $HOME:$HOME
+"    --rm                容器退出时，自动将容器删除，--rm不能与-v同时使用
+"    --user,-u           使用指定用户进入容器, Example: -u root 
+"
+" $docker exec -it ${NAMES} /bin/bash // 访问后台容器的shell
+" $docker exec -it -u ${USERNAME} ${NAMES} /bin/bash // 用指定的用户后台容器的shell
+" 用普通用户登陆后台容器shell
+" $docker exec -it ${NAMES} /bin/bash -c "adduser --disabled-password --uid=$(id -u) --gecos '' $USER && su $USER"
+"
+" $docker ps [-l] [-a]                // [-a]列出所有容器,[-l]列出最近的容器
+" $docker start   ${NAMES}            // 启动容器
+" $docker stop    ${NAMES}            // 停止容器
+" $docker restart ${NAMES}            // 重启容器
+" Ctrl-p + Ctrl-q                     // 让容器在后台运行
+" $docker attach  ${NAMES}            // 重新进入容器
+" $docker logs -f ${NAMES}            // 查看容器日志
 " // 将容器转换成镜像,转换之前先停止容器
 " // -a指定用户信息；xzl_ubuntu代表容器名；zhanglongxia/ubuntu:vim指定目标镜像的用户名、仓库名和tag信息。
 " $docker commit -m "ubuntu with vim" -a "zhanglongxia" xzl_ubuntu zhanglongxia/ubuntu:vim
-" $docker login                        //登录https://hub.docker.com账号
-" $docker push zhanglongxia/ubuntu:vim //将镜像推送至https://hub.docker.com
+" $docker login                            //登录https://hub.docker.com账号
+" $docker push zhanglongxia/ubuntu:vim     //将镜像推送至https://hub.docker.com
 " $docker run -it zhanglongxia/ubuntu:vim /bin/bash
-" $docker rm container_id             // 删除容器,删除之前要先停止容器
-" $docker rmi [-f] image_id           // 删除镜像, [-f]强制删除
+" $docker rm ${CONTAINER ID}/${NAMES}      // 删除容器,删除之前要先停止容器
+" $docker rmi [-f] ${IMAGE ID}             // 删除镜像, [-f]强制删除
 "
 " 从宿主机拷贝文件到container(拷贝的时候Container需要处于运行状态):
-" sudo docker cp host_path containerID:container_path
+" sudo docker cp host_path ${CONTAINER ID}:container_path
 "
 " 从Container拷贝文件到宿主机(拷贝的时候Container需要处于运行状态):
-" sudo docker cp containerID:container_path host_path
+" sudo docker cp ${CONTAINER ID}:container_path host_path
 "
+" 根据指定的dockerfile来创建docker
+" docker build -f dockerfile .
+" docker image ls
+" docker run -it ${IMAGE ID} /bin/bash  // REPOSITORY 名字为none的那个IMAGE ID
 "------------------------------------------------------------------------------
 
 "-------------------vimium---------------------------------------------------
@@ -260,6 +337,7 @@ Plug 'http://www.github.com/Yggdroot/indentLine'
 "Plug 'Valloric/YouCompleteMe'
 Plug 'tpope/vim-fugitive'
 Plug 'codable/diffreview'
+Plug 'rhysd/vim-clang-format'
 
 "Plug 'w0rp/ale'
 call plug#end()
@@ -398,6 +476,16 @@ let Tlist_Use_Right_Window =1   "设置taglist在右边，默认在左边
 let Tlist_WinWidth = 40         "设置taglist的宽度
 "------------------------------------------------------------------------------
 
+"-------------------clang-format-----------------------------------------------
+let g:clang_format#command='clang-format-6.0'
+let g:clang_format#detect_style_file=1
+let g:clang_format#enable_fallback_style=0
+"let g:clang_format#auto_format=1
+let g:clang_format#auto_format=0
+let g:clang_format#command='clang-format-6.0'
+let g:clang_format#enable_fallback_style=0
+
+"let g:clang_format#auto_format=0  // 临时关闭clang_format
 
 "-------------------ctags------------------------------------------------------
 "ctags的主要作用是提供代码自动转跳的的功能，读代码时非常方便。
