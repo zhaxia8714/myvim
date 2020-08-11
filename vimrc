@@ -21,6 +21,7 @@ set nocindent       "它会按照 C 语言的语法，自动地调整缩进的�
 
 syntax enable       "打开语法高亮
 set syntax=on       "允许用指定语法高亮配色方案替换默认方案
+let g:solarized_termcolors=256
 set background=dark "使用黑色背景
 "colorscheme solarized
 
@@ -85,7 +86,7 @@ vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 " Shift+f            : 当前打开的文件中所有的函数
 " Shift+l            : 打开或者关闭缩进对齐显示
 " Shift+t            : 打开或者关闭taglist
-" $cstag -R          : 生成tag文件默认文件名tags
+" $ctags -R          : 生成tag文件默认文件名tags
 " $ctags -R -f .tags : 生成tag文件名为.tags，这样可以方便在gitignore中设置忽略.tags文件
 " Ctrl+]             : 转跳到光标当前所在函数或者变量的定义处
 " Ctrl+t             : 退回光标原来在的地方
@@ -139,6 +140,40 @@ vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
 " git sed ENABLE_SLAAC  CONFIG_SLAAC_ENABLE
 "
 
+
+"-------------------Git/Github 初始化设置-------------------------------------------
+" git config --global user.name "username"
+" git config --global user.email useremail@163.com 
+"
+" ssh-keygen -t rsa -b 4096 -C "usermail@163.com" // 生成ssh key
+" cat ~/.ssh/id_rsa.pub // 将public key复制到https://github.com/settings/keys -> New SSH key
+" ssh -T git@github.com // 测试是否能访问github
+
+"-------------------MAC 环境设置-------------------------------------------
+" <1> https://www.iterm2.com/ 下载iterm2，将其设置为默认console
+" <2> git clone git://github.com/altercation/solarized.git 下载solarized配色
+" <3> 双击solarized/iterm2-colors-solarized/Solarized Dark.itermcolors 自动将配色导入到iTerm2
+" <4> iTerm2->Preferences->Profiles->Color->Color Presets 中选择Solarized Dark
+" <5> iTerm2->Preferences->Profiles->Color->Megenta/Bright颜色值改成f12020与linux保持一致
+" <6> iTerm2->Preferences->Profiles->Text中取消Draw bold text in bright color
+" <7> mkdir -p ~/.vim/colors  // 设置vim配色
+" <8> cp ./repos/solarized/vim-colors-solarized/colors/solarized.vim ~/.vim/colors/
+" <9> vi ~/.vimrc   // 添加下面的内容设置 Solarized 配色：
+"   set syntax=on
+"   set background=dark
+"   colorscheme solarized
+"
+" <10> vi ~/.bash_profile  // 设置ls命令显示颜色
+"   export CLICOLOR=1
+"
+
+"-------------------Linux 环境设置-------------------------------------------
+" <1> View -> Preferences -> Unnamed -> Colors -> Build-in schemes -> Solarized dark  //设置terminal 配色
+" 
+" <2> vi ~/.vimrc   // 添加下面的内容设置 Solarized 配色：
+"   set syntax=on
+"   let g:solarized_termcolors=256
+"   set background=dark
 
 "-------------------linux 快捷键-------------------------------------------
 " 1. 使用命令行复制：
